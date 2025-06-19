@@ -1,0 +1,81 @@
+openapi: 3.0.0
+info:
+  title: Prompter API
+  version: 1.0.0
+  description: API for generating optimized prompts and managing user accounts
+paths:
+  /api/signup:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: User created successfully
+        '400':
+          description: Invalid input or email already exists
+  /api/login:
+    post:
+      summary: Login user and get JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful, returns JWT
+        '400':
+          description: Invalid credentials
+  /api/generate-prompt:
+    post:
+      summary: Generate optimized prompt
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                inputText:
+                  type: string
+      responses:
+        '200':
+          description: Generated prompt
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+  /api/history:
+    get:
+      summary: Get user's prompt history
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of user's prompts
+        '401':
+          description: Unauthorized
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
